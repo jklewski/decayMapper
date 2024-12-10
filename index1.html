@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>leaflet-imageoverlay-colorpicker</title>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+</head>
+
+<body>
+  <div id="map" style="position:absolute;top:0;left:0;bottom:0;right:0;"></div>
+  <script>
+    const map = L.map("map", {
+      zoom: 7,
+      center: [9.9, 279],
+      layers: [
+        L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg", {
+          attribution: "<a href='http://maps.gsi.go.jp/development/ichiran.html'>GSI</a>"
+        })
+      ]
+    });
+
+
+    const overlay =
+      L.imageOverlay("overlay.jpg",
+        [
+          [5.9, 273.6],
+          [12.1, 284.2]
+        ], {
+          crossOrigin: true,
+          interactive: true
+        }).addTo(map);
+
+    overlay.getColor = function(latlng) {
+      try {
+        const p = this._map.latLngToLayerPoint(latlng);
+        const o = L.DomUtil.getPosition(this._image);
+        const w = parseInt(this._image.style.width.replace("px", ""));
+        const h = parseInt(this._image.style.height.replace("px", ""));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const context = canvas.getContext("2d");
+        context.drawImage(this._image, 0, 0, w, h);
+        return context.getImageData(p.x - o.x, p.y - o.y, 1, 1).data;
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    };
+
+    overlay.on("mousemove", function(e) {
+      const a = this.getColor(e.latlng);
+      if (a !== null) {
+        var hex = "#" + (0x1000000 + (a[0] << 16) + (a[1] << 8) + a[2]).toString(16).substr(1);
+        var tmpl = "<b style='background:@;color:black;'>@</b>";
+        if (Math.min(a[0], a[1], a[2]) < 0x40) tmpl = tmpl.replace("black", "white");
+        map.attributionControl.setPrefix(tmpl.replace(/@/g, hex));
+      } else {
+        map.attributionControl.setPrefix("unavailable");
+      }
+    });
