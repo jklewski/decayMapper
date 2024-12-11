@@ -4,7 +4,7 @@ let leftMargin
 let drawableWidth
 
 const mapConfigs = {
-    map1: {
+  CERRA_Dose: {
       imageUrl: '1.png',
       imageBounds: [[20.29, -58.1036],[75.3468,74.1051]],
       minValue: 0,
@@ -22,22 +22,22 @@ const mapConfigs = {
         [1.0, 'rgba(254, 232, 37, 0.7)']
       ]
     },
-    map2: {
-      imageUrl: 'CoV.png',
-      imageBounds: [[52.3025, -11.7612],[73.8592, 41.7643]],
+    CERRA_CV: {
+      imageUrl: '2.png',
+      imageBounds: [[20.29, -58.1036],[75.3468,74.1051]],
       minValue: 0,
-      maxValue: 1.5,
+      maxValue: 1,
       label: 'Coefficient of variation',
       colorStops: [
-        [0.0, '#000004'],
-        [0.25, '#3b0f70'],
-        [0.5, '#8c2981'],
-        [0.75, '#de4968'],
-        [1.0, '#fcffa4']
+        [0.0, 'rgba(252, 255, 164, 0.7)'],
+        [0.25, 'rgba(222, 73, 104, 0.7)'],
+        [0.5, 'rgba(140, 41, 129,  0.7)'],
+        [0.75, 'rgba(59, 14, 112, 0.7)'],
+        [1.0, 'rgba(0, 0, 4, 0.7)']
       ]
     },
-    map3: {
-      imageUrl: '2.png',
+    MET_Dose: {
+      imageUrl: '3.png',
       imageBounds: [[52.3025,41.7643],[73.8592,-11.7612]],
       minValue: 0,
       maxValue: 80,
@@ -61,7 +61,7 @@ const mapConfigs = {
   
   // Add a base layer
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    maxZoom: 7,
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
   
@@ -245,7 +245,7 @@ const mapConfigs = {
   }
   
   document.addEventListener('DOMContentLoaded', () => {
-    updateMapSelection('map1');
+    updateMapSelection('CERRA_Dose');
   
     document.getElementById('mapSelector').addEventListener('change', function() {
       const selectedMap = this.value;
@@ -298,7 +298,7 @@ const mapConfigs = {
       const [o1, g1] = grayscaleStops[i];
       const [o2, g2] = grayscaleStops[i+1];
       
-      if (gray >= g1 && gray <= g2) {
+      if ((gray >= g1 && gray <= g2) || (gray >= g2 && gray <= g1)) {
         // Found our bracket
         const t = (gray - g1) / (g2 - g1);  
         // Linear interpolation of grayscale
