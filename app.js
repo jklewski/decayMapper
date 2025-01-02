@@ -251,8 +251,10 @@ var positronLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_l
         attribution: '©OpenStreetMap, ©CartoDB',
         pane: 'labels'
 }).addTo(map);
-
-
+L.control.zoom({
+  position: 'bottomleft'
+}).addTo(map);
+map.zoomControl.remove();
 
 function createDynamicLayerControl(groupKey, defaultMapKey) {
   // Remove old control if any
