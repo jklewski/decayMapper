@@ -251,9 +251,9 @@ var positronLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_l
         attribution: '©OpenStreetMap, ©CartoDB',
         pane: 'labels'
 }).addTo(map);
-L.control.zoom({
-  position: 'bottomleft'
-}).addTo(map);
+//L.control.zoom({
+//  position: 'bottomright'
+//}).addTo(map);
 map.zoomControl.remove();
 
 function createDynamicLayerControl(groupKey, defaultMapKey) {
@@ -286,7 +286,7 @@ function createDynamicLayerControl(groupKey, defaultMapKey) {
   map.addLayer(baseLayers[chosenLabel]);
 
   // 2) Create the layer control (radio toggles)
-  layerControl = L.control.layers(baseLayers, {}, { collapsed: false }).addTo(map);
+  layerControl = L.control.layers(baseLayers, {}, { collapsed: false}).addTo(map);
 
   // 3) Update color bar, etc.
   updateMapSelection(chosenKey);
@@ -317,7 +317,7 @@ function updateMapSelection(mapKey) {
 
   // Add new color bar
   colorBarControl = new CustomColorBarControl({
-    position: 'bottomright',
+    position: 'bottomleft',
     minValue: config.minValue,
     maxValue: config.maxValue,
     label: config.label,
